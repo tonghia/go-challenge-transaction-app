@@ -1,0 +1,15 @@
+environment: D
+
+server:
+  grpc:
+    port: 10000
+  http:
+    port: 9000
+
+mysql:
+  address: localhost
+  port: 3306
+  database: ""
+  username: root
+  password: secret
+  protocol: tcp

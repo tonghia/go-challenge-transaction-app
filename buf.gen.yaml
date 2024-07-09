@@ -1,0 +1,30 @@
+version: v1
+managed:
+  enabled: true
+  go_package_prefix:
+    default: github.com/tonghia/go-challenge-transaction-app/pb
+    except:
+      - buf.build/googleapis/googleapis
+      - buf.build/bufbuild/protovalidate
+      - buf.build/grpc-ecosystem/grpc-gateway
+plugins:
+  - plugin: buf.build/protocolbuffers/go
+    out: pb
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/grpc/go
+    out: pb
+    opt:
+      - paths=source_relative
+      - require_unimplemented_servers=false
+  - plugin: buf.build/grpc-ecosystem/gateway
+    out: pb
+    opt: paths=source_relative
+  - plugin: buf.build/bufbuild/validate-go
+    out: pb
+    opt:
+      - paths=source_relative
+  - plugin: buf.build/grpc-ecosystem/openapiv2
+    out: docs
+    opt:
+      - json_names_for_fields=false

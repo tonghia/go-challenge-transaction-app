@@ -1,0 +1,14 @@
+syntax = "proto3";
+package transaction;
+
+import "google/api/annotations.proto";
+import "message.proto";
+
+service Service {
+  rpc Hello(HelloRequest) returns (HelloResponse) {
+    option (google.api.http) = {
+      get: "/hello"
+    };
+  }
+
+}
