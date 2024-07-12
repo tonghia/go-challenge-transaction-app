@@ -14,6 +14,17 @@ SOURCE_PB_FILES := $$(find $(SOURCE_PB_FOLDER) -maxdepth 1 -name '*_grpc.pb.go' 
 # Define the mockgen command
 MOCKGEN_CMD := "mockgen"
 
+HOST = 127.0.0.1
+PORT = 3306
+DATABASE = user_transaction
+USER = root
+PASSWORD = secret
+DSN := $$(mysql://$(USER):$(PASSWORD)@tcp($(HOST):$(PORT))/$(DATABASE))
+
+# Build 
+VCS_REF := $(shell git rev-parse HEAD)
+BUILD_DATE := $(shell date -u +"%Y-%m-%dT%H:%M:%SZ")
+
 .PHONY: install
 install:
 	go install github.com/bufbuild/buf/cmd/buf@latest
@@ -62,6 +73,23 @@ test: ## Run go test for whole project
 
 lint: ## Run linter
 	@golangci-lint run ./...
+
+.PHONY: migrate-up
+migrate-up:
+	migrate -database ${DSN} -path migrations up
+
+.PHONY: migrate-down
+migrate-down:
+	migrate -database ${DSN} -path migrations down
+
+.PHONY: compose-up
+compose-up:
+	DOCKER_BUILDKIT=1 docker build -f Dockerfile --build-arg=COMMIT=$(VCS_REF) --build-arg=BUILD_DATE=$(BUILD_DATE) -t user_transaction_app .
+	docker compose -f compose.yaml up -d
+
+.PHONY: compose-down
+compose-down:
+	docker compose -f compose.yaml down
 
 help: ## Display this help screen
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

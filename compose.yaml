@@ -1,0 +1,53 @@
+services:
+  db:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    container_name: mysql_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=user_transaction
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=mysecret
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u", "$$MYSQL_USER", "--password=$$MYSQL_PASSWORD"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  migrate:
+    image: migrate/migrate
+    container_name: db_migrate
+    volumes:
+      - ./migrations:/migrations
+    command: [ "-path", "/migrations", "-database", "mysql://myuser:mysecret@tcp(db:3306)/user_transaction", "up" ]
+    # entrypoint: [
+    #   "sh", "-c",
+    #   "until mysqladmin ping -h db --silent; do echo waiting for mysql; sleep 2; done; migrate -path /migrations -database mysql://myuser:mysecret@tcp(db:3306)/user_transaction up"
+    # ]
+    # entrypoint: [
+    #   "sh", "-c",
+    #   "until mysqladmin ping -h db; do echo waiting for mysql; sleep 2; done; migrate -path /migrations -database mysql://myuser:mysecret@db:3306/user_transaction up"
+    # ]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    image: user_transaction_app:latest
+    ports:
+      - "9000:9000"
+    container_name: user_transaction_app
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_started
+    environment:
+      MYSQL__ADDRESS: db
+      MYSQL__PORT: 3306
+      MYSQL__USER: myuser
+      MYSQL__PASSWORD: mysecret
+      MYSQL__DATABASE: user_transaction
+    restart: on-failure

@@ -1,4 +1,4 @@
-FROM public.ecr.aws/docker/library/golang:1.22.2-alpine3.18 AS builder
+FROM golang:1.22.5-alpine3.20 AS builder
 
 WORKDIR /app
 RUN apk update && apk upgrade && \
@@ -10,7 +10,7 @@ RUN go mod download
 COPY ./ ./
 RUN go build -o /dist/server cmd/app/app.go
 
-FROM public.ecr.aws/docker/library/alpine:3.18.4
+FROM alpine:3.20
 
 RUN apk add --update ca-certificates tzdata curl pkgconfig && \
     cp /usr/share/zoneinfo/Asia/Ho_Chi_Minh /etc/localtime && \
