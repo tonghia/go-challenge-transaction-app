@@ -22,14 +22,6 @@ services:
     volumes:
       - ./migrations:/migrations
     command: [ "-path", "/migrations", "-database", "mysql://myuser:mysecret@tcp(db:3306)/user_transaction", "up" ]
-    # entrypoint: [
-    #   "sh", "-c",
-    #   "until mysqladmin ping -h db --silent; do echo waiting for mysql; sleep 2; done; migrate -path /migrations -database mysql://myuser:mysecret@tcp(db:3306)/user_transaction up"
-    # ]
-    # entrypoint: [
-    #   "sh", "-c",
-    #   "until mysqladmin ping -h db; do echo waiting for mysql; sleep 2; done; migrate -path /migrations -database mysql://myuser:mysecret@db:3306/user_transaction up"
-    # ]
     depends_on:
       db:
         condition: service_healthy
