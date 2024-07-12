@@ -4,9 +4,8 @@ import (
 	"context"
 	"os"
 
-	"github.com/tonghia/go-challenge-transaction-app/pkg/gatewaykit"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/tonghia/go-challenge-transaction-app/pkg/server/gateway"
 	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
@@ -48,29 +47,29 @@ func WithGatewayMuxOptions(opts ...runtime.ServeMuxOption) Option {
 }
 
 // WithGatewayServerMiddlewares returns an Option that sets middleware(s) for http.Server to a gateway server.
-func WithGatewayServerMiddlewares(middlewares ...gatewaykit.HTTPServerMiddleware) Option {
+func WithGatewayServerMiddlewares(middlewares ...gateway.HTTPServerMiddleware) Option {
 	return func(c *serverConfig) {
 		c.gateway.serverMiddlewares = append(c.gateway.serverMiddlewares, middlewares...)
 	}
 }
 
 // WithGatewayServerHandler returns an Option that sets hanlers(s) for http.Server to a gateway server.
-func WithGatewayServerHandler(handlers ...gatewaykit.HTTPServerHandler) Option {
+func WithGatewayServerHandler(handlers ...gateway.HTTPServerHandler) Option {
 	return func(c *serverConfig) {
 		c.gateway.serverHandlers = append(c.gateway.serverHandlers, handlers...)
 	}
 }
 
 // WithGatewayServerConfig returns an Option that specifies http.Server configuration to a gateway server.
-func WithGatewayServerConfig(cfg *gatewaykit.HTTPServerConfig) Option {
+func WithGatewayServerConfig(cfg *gateway.HTTPServerConfig) Option {
 	return func(c *serverConfig) {
 		c.gateway.serverConfig = cfg
 	}
 }
 
 // WithPassedHeader returns an Option that sets configurations about passed headers for a gateway server.
-func WithPassedHeader(decider gatewaykit.PassedHeaderDeciderFunc) Option {
-	return WithGatewayServerMiddlewares(gatewaykit.CreatePassingHeaderMiddleware(decider))
+func WithPassedHeader(decider gateway.PassedHeaderDeciderFunc) Option {
+	return WithGatewayServerMiddlewares(gateway.CreatePassingHeaderMiddleware(decider))
 }
 
 ///-------------------------- GRPC options below--------------------------

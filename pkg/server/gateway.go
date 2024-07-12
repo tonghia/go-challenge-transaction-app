@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/tonghia/go-challenge-transaction-app/pkg/gatewaykit"
+	"github.com/tonghia/go-challenge-transaction-app/pkg/server/gateway"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/status"
@@ -26,9 +26,9 @@ type gatewayServer struct {
 type gatewayConfig struct {
 	addr              Listen
 	muxOptions        []runtime.ServeMuxOption
-	serverConfig      *gatewaykit.HTTPServerConfig
-	serverMiddlewares []gatewaykit.HTTPServerMiddleware
-	serverHandlers    []gatewaykit.HTTPServerHandler
+	serverConfig      *gateway.HTTPServerConfig
+	serverMiddlewares []gateway.HTTPServerMiddleware
+	serverHandlers    []gateway.HTTPServerHandler
 }
 
 func createDefaultGatewayConfig() *gatewayConfig {
@@ -38,7 +38,7 @@ func createDefaultGatewayConfig() *gatewayConfig {
 			Port: 9000,
 		},
 		muxOptions: []runtime.ServeMuxOption{
-			gatewaykit.DefaultMarshaler(),
+			gateway.DefaultMarshaler(),
 			runtime.WithErrorHandler(func(ctx context.Context, mux *runtime.ServeMux, marshaler runtime.Marshaler, writer http.ResponseWriter, req *http.Request, err error) {
 				//creating a new HTTTPStatusError with a custom status, and passing error
 				s := status.Convert(err)
@@ -60,9 +60,9 @@ func createDefaultGatewayConfig() *gatewayConfig {
 				runtime.DefaultHTTPErrorHandler(ctx, mux, marshaler, writer, req, &newError)
 			}),
 		},
-		serverHandlers: []gatewaykit.HTTPServerHandler{
-			gatewaykit.PrometheusHandler,
-			gatewaykit.PprofHandler,
+		serverHandlers: []gateway.HTTPServerHandler{
+			gateway.PrometheusHandler,
+			gateway.PprofHandler,
 		},
 	}
 

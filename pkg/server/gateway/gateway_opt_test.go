@@ -1,4 +1,4 @@
-package gatewaykit
+package gateway
 
 import (
 	"strings"
