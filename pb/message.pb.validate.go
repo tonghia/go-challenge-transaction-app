@@ -35,41 +35,107 @@ var (
 	_ = sort.Sort
 )
 
-// Validate checks the field values on HelloRequest with the rules defined in
+// Validate checks the field values on Transaction with the rules defined in
 // the proto definition for this message. If any rules are violated, the first
 // error encountered is returned, or nil if there are no violations.
-func (m *HelloRequest) Validate() error {
+func (m *Transaction) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on HelloRequest with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in HelloRequestMultiError, or
+// ValidateAll checks the field values on Transaction with the rules defined in
+// the proto definition for this message. If any rules are violated, the
+// result is a list of violation errors wrapped in TransactionMultiError, or
 // nil if none found.
-func (m *HelloRequest) ValidateAll() error {
+func (m *Transaction) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *HelloRequest) validate(all bool) error {
+func (m *Transaction) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
+	// no validation rules for Id
+
+	// no validation rules for AccountId
+
+	// no validation rules for Amount
+
+	// no validation rules for TransactionType
+
+	if all {
+		switch v := interface{}(m.GetCreatedAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, TransactionValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, TransactionValidationError{
+					field:  "CreatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetCreatedAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return TransactionValidationError{
+				field:  "CreatedAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if all {
+		switch v := interface{}(m.GetUpdatedAt()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, TransactionValidationError{
+					field:  "UpdatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, TransactionValidationError{
+					field:  "UpdatedAt",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetUpdatedAt()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return TransactionValidationError{
+				field:  "UpdatedAt",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
 	if len(errors) > 0 {
-		return HelloRequestMultiError(errors)
+		return TransactionMultiError(errors)
 	}
 
 	return nil
 }
 
-// HelloRequestMultiError is an error wrapping multiple validation errors
-// returned by HelloRequest.ValidateAll() if the designated constraints aren't met.
-type HelloRequestMultiError []error
+// TransactionMultiError is an error wrapping multiple validation errors
+// returned by Transaction.ValidateAll() if the designated constraints aren't met.
+type TransactionMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m HelloRequestMultiError) Error() string {
+func (m TransactionMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -78,11 +144,11 @@ func (m HelloRequestMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m HelloRequestMultiError) AllErrors() []error { return m }
+func (m TransactionMultiError) AllErrors() []error { return m }
 
-// HelloRequestValidationError is the validation error returned by
-// HelloRequest.Validate if the designated constraints aren't met.
-type HelloRequestValidationError struct {
+// TransactionValidationError is the validation error returned by
+// Transaction.Validate if the designated constraints aren't met.
+type TransactionValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -90,22 +156,22 @@ type HelloRequestValidationError struct {
 }
 
 // Field function returns field value.
-func (e HelloRequestValidationError) Field() string { return e.field }
+func (e TransactionValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e HelloRequestValidationError) Reason() string { return e.reason }
+func (e TransactionValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e HelloRequestValidationError) Cause() error { return e.cause }
+func (e TransactionValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e HelloRequestValidationError) Key() bool { return e.key }
+func (e TransactionValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e HelloRequestValidationError) ErrorName() string { return "HelloRequestValidationError" }
+func (e TransactionValidationError) ErrorName() string { return "TransactionValidationError" }
 
 // Error satisfies the builtin error interface
-func (e HelloRequestValidationError) Error() string {
+func (e TransactionValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -117,14 +183,14 @@ func (e HelloRequestValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sHelloRequest.%s: %s%s",
+		"invalid %sTransaction.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = HelloRequestValidationError{}
+var _ error = TransactionValidationError{}
 
 var _ interface {
 	Field() string
@@ -132,44 +198,48 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = HelloRequestValidationError{}
+} = TransactionValidationError{}
 
-// Validate checks the field values on HelloResponse with the rules defined in
-// the proto definition for this message. If any rules are violated, the first
-// error encountered is returned, or nil if there are no violations.
-func (m *HelloResponse) Validate() error {
+// Validate checks the field values on ListTransactionsRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListTransactionsRequest) Validate() error {
 	return m.validate(false)
 }
 
-// ValidateAll checks the field values on HelloResponse with the rules defined
-// in the proto definition for this message. If any rules are violated, the
-// result is a list of violation errors wrapped in HelloResponseMultiError, or
-// nil if none found.
-func (m *HelloResponse) ValidateAll() error {
+// ValidateAll checks the field values on ListTransactionsRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListTransactionsRequestMultiError, or nil if none found.
+func (m *ListTransactionsRequest) ValidateAll() error {
 	return m.validate(true)
 }
 
-func (m *HelloResponse) validate(all bool) error {
+func (m *ListTransactionsRequest) validate(all bool) error {
 	if m == nil {
 		return nil
 	}
 
 	var errors []error
 
+	// no validation rules for UserId
+
+	// no validation rules for AccountId
+
 	if len(errors) > 0 {
-		return HelloResponseMultiError(errors)
+		return ListTransactionsRequestMultiError(errors)
 	}
 
 	return nil
 }
 
-// HelloResponseMultiError is an error wrapping multiple validation errors
-// returned by HelloResponse.ValidateAll() if the designated constraints
-// aren't met.
-type HelloResponseMultiError []error
+// ListTransactionsRequestMultiError is an error wrapping multiple validation
+// errors returned by ListTransactionsRequest.ValidateAll() if the designated
+// constraints aren't met.
+type ListTransactionsRequestMultiError []error
 
 // Error returns a concatenation of all the error messages it wraps.
-func (m HelloResponseMultiError) Error() string {
+func (m ListTransactionsRequestMultiError) Error() string {
 	var msgs []string
 	for _, err := range m {
 		msgs = append(msgs, err.Error())
@@ -178,11 +248,11 @@ func (m HelloResponseMultiError) Error() string {
 }
 
 // AllErrors returns a list of validation violation errors.
-func (m HelloResponseMultiError) AllErrors() []error { return m }
+func (m ListTransactionsRequestMultiError) AllErrors() []error { return m }
 
-// HelloResponseValidationError is the validation error returned by
-// HelloResponse.Validate if the designated constraints aren't met.
-type HelloResponseValidationError struct {
+// ListTransactionsRequestValidationError is the validation error returned by
+// ListTransactionsRequest.Validate if the designated constraints aren't met.
+type ListTransactionsRequestValidationError struct {
 	field  string
 	reason string
 	cause  error
@@ -190,22 +260,24 @@ type HelloResponseValidationError struct {
 }
 
 // Field function returns field value.
-func (e HelloResponseValidationError) Field() string { return e.field }
+func (e ListTransactionsRequestValidationError) Field() string { return e.field }
 
 // Reason function returns reason value.
-func (e HelloResponseValidationError) Reason() string { return e.reason }
+func (e ListTransactionsRequestValidationError) Reason() string { return e.reason }
 
 // Cause function returns cause value.
-func (e HelloResponseValidationError) Cause() error { return e.cause }
+func (e ListTransactionsRequestValidationError) Cause() error { return e.cause }
 
 // Key function returns key value.
-func (e HelloResponseValidationError) Key() bool { return e.key }
+func (e ListTransactionsRequestValidationError) Key() bool { return e.key }
 
 // ErrorName returns error name.
-func (e HelloResponseValidationError) ErrorName() string { return "HelloResponseValidationError" }
+func (e ListTransactionsRequestValidationError) ErrorName() string {
+	return "ListTransactionsRequestValidationError"
+}
 
 // Error satisfies the builtin error interface
-func (e HelloResponseValidationError) Error() string {
+func (e ListTransactionsRequestValidationError) Error() string {
 	cause := ""
 	if e.cause != nil {
 		cause = fmt.Sprintf(" | caused by: %v", e.cause)
@@ -217,14 +289,14 @@ func (e HelloResponseValidationError) Error() string {
 	}
 
 	return fmt.Sprintf(
-		"invalid %sHelloResponse.%s: %s%s",
+		"invalid %sListTransactionsRequest.%s: %s%s",
 		key,
 		e.field,
 		e.reason,
 		cause)
 }
 
-var _ error = HelloResponseValidationError{}
+var _ error = ListTransactionsRequestValidationError{}
 
 var _ interface {
 	Field() string
@@ -232,4 +304,908 @@ var _ interface {
 	Key() bool
 	Cause() error
 	ErrorName() string
-} = HelloResponseValidationError{}
+} = ListTransactionsRequestValidationError{}
+
+// Validate checks the field values on ListTransactionsResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListTransactionsResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListTransactionsResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// ListTransactionsResponseMultiError, or nil if none found.
+func (m *ListTransactionsResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListTransactionsResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Code
+
+	// no validation rules for Message
+
+	if all {
+		switch v := interface{}(m.GetData()).(type) {
+		case interface{ ValidateAll() error }:
+			if err := v.ValidateAll(); err != nil {
+				errors = append(errors, ListTransactionsResponseValidationError{
+					field:  "Data",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		case interface{ Validate() error }:
+			if err := v.Validate(); err != nil {
+				errors = append(errors, ListTransactionsResponseValidationError{
+					field:  "Data",
+					reason: "embedded message failed validation",
+					cause:  err,
+				})
+			}
+		}
+	} else if v, ok := interface{}(m.GetData()).(interface{ Validate() error }); ok {
+		if err := v.Validate(); err != nil {
+			return ListTransactionsResponseValidationError{
+				field:  "Data",
+				reason: "embedded message failed validation",
+				cause:  err,
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		return ListTransactionsResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListTransactionsResponseMultiError is an error wrapping multiple validation
+// errors returned by ListTransactionsResponse.ValidateAll() if the designated
+// constraints aren't met.
+type ListTransactionsResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListTransactionsResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListTransactionsResponseMultiError) AllErrors() []error { return m }
+
+// ListTransactionsResponseValidationError is the validation error returned by
+// ListTransactionsResponse.Validate if the designated constraints aren't met.
+type ListTransactionsResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListTransactionsResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListTransactionsResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListTransactionsResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListTransactionsResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListTransactionsResponseValidationError) ErrorName() string {
+	return "ListTransactionsResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListTransactionsResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListTransactionsResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListTransactionsResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListTransactionsResponseValidationError{}
+
+// Validate checks the field values on CreateTransactionRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *CreateTransactionRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CreateTransactionRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// CreateTransactionRequestMultiError, or nil if none found.
+func (m *CreateTransactionRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CreateTransactionRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for UserId
+
+	if len(errors) > 0 {
+		return CreateTransactionRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// CreateTransactionRequestMultiError is an error wrapping multiple validation
+// errors returned by CreateTransactionRequest.ValidateAll() if the designated
+// constraints aren't met.
+type CreateTransactionRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CreateTransactionRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CreateTransactionRequestMultiError) AllErrors() []error { return m }
+
+// CreateTransactionRequestValidationError is the validation error returned by
+// CreateTransactionRequest.Validate if the designated constraints aren't met.
+type CreateTransactionRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CreateTransactionRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CreateTransactionRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CreateTransactionRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CreateTransactionRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CreateTransactionRequestValidationError) ErrorName() string {
+	return "CreateTransactionRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e CreateTransactionRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCreateTransactionRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CreateTransactionRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CreateTransactionRequestValidationError{}
+
+// Validate checks the field values on CreateTransactionResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *CreateTransactionResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on CreateTransactionResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// CreateTransactionResponseMultiError, or nil if none found.
+func (m *CreateTransactionResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *CreateTransactionResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Code
+
+	// no validation rules for Message
+
+	if len(errors) > 0 {
+		return CreateTransactionResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// CreateTransactionResponseMultiError is an error wrapping multiple validation
+// errors returned by CreateTransactionResponse.ValidateAll() if the
+// designated constraints aren't met.
+type CreateTransactionResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m CreateTransactionResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m CreateTransactionResponseMultiError) AllErrors() []error { return m }
+
+// CreateTransactionResponseValidationError is the validation error returned by
+// CreateTransactionResponse.Validate if the designated constraints aren't met.
+type CreateTransactionResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e CreateTransactionResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e CreateTransactionResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e CreateTransactionResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e CreateTransactionResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e CreateTransactionResponseValidationError) ErrorName() string {
+	return "CreateTransactionResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e CreateTransactionResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sCreateTransactionResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = CreateTransactionResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = CreateTransactionResponseValidationError{}
+
+// Validate checks the field values on UpdateTransactionRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *UpdateTransactionRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UpdateTransactionRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UpdateTransactionRequestMultiError, or nil if none found.
+func (m *UpdateTransactionRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UpdateTransactionRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for UserId
+
+	if len(errors) > 0 {
+		return UpdateTransactionRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// UpdateTransactionRequestMultiError is an error wrapping multiple validation
+// errors returned by UpdateTransactionRequest.ValidateAll() if the designated
+// constraints aren't met.
+type UpdateTransactionRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UpdateTransactionRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UpdateTransactionRequestMultiError) AllErrors() []error { return m }
+
+// UpdateTransactionRequestValidationError is the validation error returned by
+// UpdateTransactionRequest.Validate if the designated constraints aren't met.
+type UpdateTransactionRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpdateTransactionRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpdateTransactionRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpdateTransactionRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpdateTransactionRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpdateTransactionRequestValidationError) ErrorName() string {
+	return "UpdateTransactionRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpdateTransactionRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpdateTransactionRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpdateTransactionRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpdateTransactionRequestValidationError{}
+
+// Validate checks the field values on UpdateTransactionResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *UpdateTransactionResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on UpdateTransactionResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// UpdateTransactionResponseMultiError, or nil if none found.
+func (m *UpdateTransactionResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *UpdateTransactionResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Code
+
+	// no validation rules for Message
+
+	if len(errors) > 0 {
+		return UpdateTransactionResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// UpdateTransactionResponseMultiError is an error wrapping multiple validation
+// errors returned by UpdateTransactionResponse.ValidateAll() if the
+// designated constraints aren't met.
+type UpdateTransactionResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m UpdateTransactionResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m UpdateTransactionResponseMultiError) AllErrors() []error { return m }
+
+// UpdateTransactionResponseValidationError is the validation error returned by
+// UpdateTransactionResponse.Validate if the designated constraints aren't met.
+type UpdateTransactionResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e UpdateTransactionResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e UpdateTransactionResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e UpdateTransactionResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e UpdateTransactionResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e UpdateTransactionResponseValidationError) ErrorName() string {
+	return "UpdateTransactionResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e UpdateTransactionResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sUpdateTransactionResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = UpdateTransactionResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = UpdateTransactionResponseValidationError{}
+
+// Validate checks the field values on DeleteTransactionRequest with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeleteTransactionRequest) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteTransactionRequest with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeleteTransactionRequestMultiError, or nil if none found.
+func (m *DeleteTransactionRequest) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteTransactionRequest) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for UserId
+
+	// no validation rules for TransactionId
+
+	if len(errors) > 0 {
+		return DeleteTransactionRequestMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeleteTransactionRequestMultiError is an error wrapping multiple validation
+// errors returned by DeleteTransactionRequest.ValidateAll() if the designated
+// constraints aren't met.
+type DeleteTransactionRequestMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteTransactionRequestMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteTransactionRequestMultiError) AllErrors() []error { return m }
+
+// DeleteTransactionRequestValidationError is the validation error returned by
+// DeleteTransactionRequest.Validate if the designated constraints aren't met.
+type DeleteTransactionRequestValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteTransactionRequestValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteTransactionRequestValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteTransactionRequestValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteTransactionRequestValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteTransactionRequestValidationError) ErrorName() string {
+	return "DeleteTransactionRequestValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteTransactionRequestValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteTransactionRequest.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteTransactionRequestValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteTransactionRequestValidationError{}
+
+// Validate checks the field values on DeleteTransactionResponse with the rules
+// defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *DeleteTransactionResponse) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on DeleteTransactionResponse with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the result is a list of violation errors wrapped in
+// DeleteTransactionResponseMultiError, or nil if none found.
+func (m *DeleteTransactionResponse) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *DeleteTransactionResponse) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	// no validation rules for Code
+
+	// no validation rules for Message
+
+	if len(errors) > 0 {
+		return DeleteTransactionResponseMultiError(errors)
+	}
+
+	return nil
+}
+
+// DeleteTransactionResponseMultiError is an error wrapping multiple validation
+// errors returned by DeleteTransactionResponse.ValidateAll() if the
+// designated constraints aren't met.
+type DeleteTransactionResponseMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m DeleteTransactionResponseMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m DeleteTransactionResponseMultiError) AllErrors() []error { return m }
+
+// DeleteTransactionResponseValidationError is the validation error returned by
+// DeleteTransactionResponse.Validate if the designated constraints aren't met.
+type DeleteTransactionResponseValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e DeleteTransactionResponseValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e DeleteTransactionResponseValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e DeleteTransactionResponseValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e DeleteTransactionResponseValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e DeleteTransactionResponseValidationError) ErrorName() string {
+	return "DeleteTransactionResponseValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e DeleteTransactionResponseValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sDeleteTransactionResponse.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = DeleteTransactionResponseValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = DeleteTransactionResponseValidationError{}
+
+// Validate checks the field values on ListTransactionsResponse_Data with the
+// rules defined in the proto definition for this message. If any rules are
+// violated, the first error encountered is returned, or nil if there are no violations.
+func (m *ListTransactionsResponse_Data) Validate() error {
+	return m.validate(false)
+}
+
+// ValidateAll checks the field values on ListTransactionsResponse_Data with
+// the rules defined in the proto definition for this message. If any rules
+// are violated, the result is a list of violation errors wrapped in
+// ListTransactionsResponse_DataMultiError, or nil if none found.
+func (m *ListTransactionsResponse_Data) ValidateAll() error {
+	return m.validate(true)
+}
+
+func (m *ListTransactionsResponse_Data) validate(all bool) error {
+	if m == nil {
+		return nil
+	}
+
+	var errors []error
+
+	for idx, item := range m.GetTransactions() {
+		_, _ = idx, item
+
+		if all {
+			switch v := interface{}(item).(type) {
+			case interface{ ValidateAll() error }:
+				if err := v.ValidateAll(); err != nil {
+					errors = append(errors, ListTransactionsResponse_DataValidationError{
+						field:  fmt.Sprintf("Transactions[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			case interface{ Validate() error }:
+				if err := v.Validate(); err != nil {
+					errors = append(errors, ListTransactionsResponse_DataValidationError{
+						field:  fmt.Sprintf("Transactions[%v]", idx),
+						reason: "embedded message failed validation",
+						cause:  err,
+					})
+				}
+			}
+		} else if v, ok := interface{}(item).(interface{ Validate() error }); ok {
+			if err := v.Validate(); err != nil {
+				return ListTransactionsResponse_DataValidationError{
+					field:  fmt.Sprintf("Transactions[%v]", idx),
+					reason: "embedded message failed validation",
+					cause:  err,
+				}
+			}
+		}
+
+	}
+
+	if len(errors) > 0 {
+		return ListTransactionsResponse_DataMultiError(errors)
+	}
+
+	return nil
+}
+
+// ListTransactionsResponse_DataMultiError is an error wrapping multiple
+// validation errors returned by ListTransactionsResponse_Data.ValidateAll()
+// if the designated constraints aren't met.
+type ListTransactionsResponse_DataMultiError []error
+
+// Error returns a concatenation of all the error messages it wraps.
+func (m ListTransactionsResponse_DataMultiError) Error() string {
+	var msgs []string
+	for _, err := range m {
+		msgs = append(msgs, err.Error())
+	}
+	return strings.Join(msgs, "; ")
+}
+
+// AllErrors returns a list of validation violation errors.
+func (m ListTransactionsResponse_DataMultiError) AllErrors() []error { return m }
+
+// ListTransactionsResponse_DataValidationError is the validation error
+// returned by ListTransactionsResponse_Data.Validate if the designated
+// constraints aren't met.
+type ListTransactionsResponse_DataValidationError struct {
+	field  string
+	reason string
+	cause  error
+	key    bool
+}
+
+// Field function returns field value.
+func (e ListTransactionsResponse_DataValidationError) Field() string { return e.field }
+
+// Reason function returns reason value.
+func (e ListTransactionsResponse_DataValidationError) Reason() string { return e.reason }
+
+// Cause function returns cause value.
+func (e ListTransactionsResponse_DataValidationError) Cause() error { return e.cause }
+
+// Key function returns key value.
+func (e ListTransactionsResponse_DataValidationError) Key() bool { return e.key }
+
+// ErrorName returns error name.
+func (e ListTransactionsResponse_DataValidationError) ErrorName() string {
+	return "ListTransactionsResponse_DataValidationError"
+}
+
+// Error satisfies the builtin error interface
+func (e ListTransactionsResponse_DataValidationError) Error() string {
+	cause := ""
+	if e.cause != nil {
+		cause = fmt.Sprintf(" | caused by: %v", e.cause)
+	}
+
+	key := ""
+	if e.key {
+		key = "key for "
+	}
+
+	return fmt.Sprintf(
+		"invalid %sListTransactionsResponse_Data.%s: %s%s",
+		key,
+		e.field,
+		e.reason,
+		cause)
+}
+
+var _ error = ListTransactionsResponse_DataValidationError{}
+
+var _ interface {
+	Field() string
+	Reason() string
+	Key() bool
+	Cause() error
+	ErrorName() string
+} = ListTransactionsResponse_DataValidationError{}

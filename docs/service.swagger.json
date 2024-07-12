@@ -1,13 +1,17 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "service.proto",
-    "version": "version not set"
+    "title": "User Transaction",
+    "version": "1.0.0"
   },
   "tags": [
     {
       "name": "Service"
     }
+  ],
+  "host": "localhost:9000",
+  "schemes": [
+    "http"
   ],
   "consumes": [
     "application/json"
@@ -16,14 +20,14 @@
     "application/json"
   ],
   "paths": {
-    "/hello": {
+    "/api/auth/users/{user_id}/transactions": {
       "get": {
-        "operationId": "Service_Hello",
+        "operationId": "Service_ListTransactions",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/transactionHelloResponse"
+              "$ref": "#/definitions/transactionListTransactionsResponse"
             }
           },
           "default": {
@@ -33,6 +37,146 @@
             }
           }
         },
+        "parameters": [
+          {
+            "name": "user_id",
+            "description": "ID of user",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "account_id",
+            "in": "query",
+            "required": false,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "Authorization",
+            "description": "Bearer token",
+            "in": "header",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Service"
+        ]
+      },
+      "post": {
+        "operationId": "Service_CreateTransaction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/transactionCreateTransactionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "description": "ID of user",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceCreateTransactionBody"
+            }
+          }
+        ],
+        "tags": [
+          "Service"
+        ]
+      },
+      "put": {
+        "operationId": "Service_UpdateTransaction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/transactionUpdateTransactionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "description": "ID of user",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceUpdateTransactionBody"
+            }
+          }
+        ],
+        "tags": [
+          "Service"
+        ]
+      }
+    },
+    "/api/auth/users/{user_id}/transactions/{transaction_id}": {
+      "delete": {
+        "operationId": "Service_DeleteTransaction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/transactionDeleteTransactionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "description": "ID of user",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "transaction_id",
+            "description": "ID of transaction",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
         "tags": [
           "Service"
         ]
@@ -40,6 +184,24 @@
     }
   },
   "definitions": {
+    "ListTransactionsResponseData": {
+      "type": "object",
+      "properties": {
+        "transactions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/transactionTransaction"
+          }
+        }
+      }
+    },
+    "ServiceCreateTransactionBody": {
+      "type": "object"
+    },
+    "ServiceUpdateTransactionBody": {
+      "type": "object"
+    },
     "protobufAny": {
       "type": "object",
       "properties": {
@@ -68,8 +230,84 @@
         }
       }
     },
-    "transactionHelloResponse": {
-      "type": "object"
+    "transactionCreateTransactionResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "transactionDeleteTransactionResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "transactionListTransactionsResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "$ref": "#/definitions/ListTransactionsResponseData"
+        }
+      }
+    },
+    "transactionTransaction": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "account_id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "amount": {
+          "type": "string",
+          "format": "int64"
+        },
+        "transaction_type": {
+          "type": "string"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "transactionUpdateTransactionResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
     }
   }
 }

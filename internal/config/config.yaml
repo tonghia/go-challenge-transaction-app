@@ -9,7 +9,7 @@ server:
 mysql:
   address: localhost
   port: 3306
-  database: ""
-  username: root
-  password: secret
+  database: user_transaction
+  username: myuser
+  password: mysecret
   protocol: tcp

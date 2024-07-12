@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"github.com/tonghia/go-challenge-transaction-app/internal/must"
 	"gorm.io/gorm"
 )
 
@@ -11,13 +10,19 @@ const (
 )
 
 type Repository struct {
-	db      *gorm.DB
-	isInTxn bool
+	db                 *gorm.DB
+	isInTxn            bool
+	User               UserRepositorier
+	Account            AccountRepositorier
+	AccountTransaction AccountTransactionRepositorier
 }
 
 func NewRepository(db *gorm.DB) *Repository {
 	return &Repository{
-		db: db,
+		db:                 db,
+		User:               NewUserRepository(db),
+		Account:            NewAccountRepository(db),
+		AccountTransaction: NewAccountTransactionRepository(db),
 	}
 }
 
@@ -29,8 +34,4 @@ func (r Repository) Transaction(txFunc func(*Repository) error) (err error) {
 
 		return txFunc(&txRepositories)
 	})
-}
-
-func (r Repository) Close() error {
-	return must.Close(r.db)
 }

@@ -2,12 +2,50 @@ syntax = "proto3";
 package transaction;
 
 import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
 import "message.proto";
 
+option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
+  info: { title: "User Transaction", version: "1.0.0" },
+  host: "localhost:9000",
+  schemes: HTTP
+};
+
 service Service {
-  rpc Hello(HelloRequest) returns (HelloResponse) {
+  rpc ListTransactions(ListTransactionsRequest) returns (ListTransactionsResponse) {
     option (google.api.http) = {
-      get: "/hello"
+      get: "/api/auth/users/{user_id}/transactions"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      parameters: {
+        headers: {
+          name: "Authorization"
+          description: "Bearer token"
+          type: STRING
+          required: true
+        }
+      }
+    };
+  }
+
+  rpc CreateTransaction(CreateTransactionRequest) returns (CreateTransactionResponse) {
+    option (google.api.http) = {
+      post: "/api/auth/users/{user_id}/transactions",
+      body: "*"
+    };
+  }
+
+  rpc UpdateTransaction(UpdateTransactionRequest) returns (UpdateTransactionResponse) {
+    option (google.api.http) = {
+      put: "/api/auth/users/{user_id}/transactions",
+      body: "*"
+    };
+  }
+
+  rpc DeleteTransaction(DeleteTransactionRequest) returns (DeleteTransactionResponse) {
+    option (google.api.http) = {
+      delete: "/api/auth/users/{user_id}/transactions/{transaction_id}"
     };
   }
 

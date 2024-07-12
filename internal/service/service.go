@@ -17,6 +17,7 @@ const (
 )
 
 type serviceInterface interface {
+	pb.ServiceServer
 }
 
 var _ serviceInterface = &service{}
@@ -55,5 +56,4 @@ func (s *service) RegisterWithMuxServer(ctx context.Context, mux *runtime.ServeM
 
 // Close ...
 func (s *service) Close(ctx context.Context) {
-	s.repos.Close()
 }
