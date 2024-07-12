@@ -38,7 +38,7 @@ service Service {
 
   rpc UpdateTransaction(UpdateTransactionRequest) returns (UpdateTransactionResponse) {
     option (google.api.http) = {
-      put: "/api/auth/users/{user_id}/transactions",
+      put: "/api/auth/users/{user_id}/transactions/{transaction_id}",
       body: "*"
     };
   }

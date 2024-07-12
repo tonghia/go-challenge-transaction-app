@@ -102,44 +102,6 @@
         "tags": [
           "Service"
         ]
-      },
-      "put": {
-        "operationId": "Service_UpdateTransaction",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/transactionUpdateTransactionResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/rpcStatus"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "user_id",
-            "description": "ID of user",
-            "in": "path",
-            "required": true,
-            "type": "string",
-            "format": "int64"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ServiceUpdateTransactionBody"
-            }
-          }
-        ],
-        "tags": [
-          "Service"
-        ]
       }
     },
     "/api/auth/users/{user_id}/transactions/{transaction_id}": {
@@ -180,27 +142,70 @@
         "tags": [
           "Service"
         ]
+      },
+      "put": {
+        "operationId": "Service_UpdateTransaction",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/transactionUpdateTransactionResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "user_id",
+            "description": "ID of user",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "transaction_id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ServiceUpdateTransactionBody"
+            }
+          }
+        ],
+        "tags": [
+          "Service"
+        ]
       }
     }
   },
   "definitions": {
-    "ListTransactionsResponseData": {
+    "ServiceCreateTransactionBody": {
       "type": "object",
       "properties": {
-        "transactions": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "$ref": "#/definitions/transactionTransaction"
-          }
+        "transaction": {
+          "$ref": "#/definitions/transactionTransaction"
         }
       }
     },
-    "ServiceCreateTransactionBody": {
-      "type": "object"
-    },
     "ServiceUpdateTransactionBody": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "transaction": {
+          "$ref": "#/definitions/transactionTransaction"
+        }
+      }
     },
     "protobufAny": {
       "type": "object",
@@ -239,6 +244,30 @@
         },
         "message": {
           "type": "string"
+        },
+        "data": {
+          "$ref": "#/definitions/transactionCreateTransactionResponseData"
+        }
+      }
+    },
+    "transactionCreateTransactionResponseData": {
+      "type": "object",
+      "properties": {
+        "transaction": {
+          "$ref": "#/definitions/transactionTransaction"
+        }
+      }
+    },
+    "transactionDecimal": {
+      "type": "object",
+      "properties": {
+        "unit": {
+          "type": "string",
+          "format": "int64"
+        },
+        "nanos": {
+          "type": "integer",
+          "format": "int32"
         }
       }
     },
@@ -265,7 +294,19 @@
           "type": "string"
         },
         "data": {
-          "$ref": "#/definitions/ListTransactionsResponseData"
+          "$ref": "#/definitions/transactionListTransactionsResponseData"
+        }
+      }
+    },
+    "transactionListTransactionsResponseData": {
+      "type": "object",
+      "properties": {
+        "transactions": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/transactionTransaction"
+          }
         }
       }
     },
@@ -281,17 +322,12 @@
           "format": "int64"
         },
         "amount": {
-          "type": "string",
-          "format": "int64"
+          "$ref": "#/definitions/transactionDecimal"
         },
         "transaction_type": {
           "type": "string"
         },
         "created_at": {
-          "type": "string",
-          "format": "date-time"
-        },
-        "updated_at": {
           "type": "string",
           "format": "date-time"
         }
@@ -306,6 +342,17 @@
         },
         "message": {
           "type": "string"
+        },
+        "data": {
+          "$ref": "#/definitions/transactionUpdateTransactionResponseData"
+        }
+      }
+    },
+    "transactionUpdateTransactionResponseData": {
+      "type": "object",
+      "properties": {
+        "transaction": {
+          "$ref": "#/definitions/transactionTransaction"
         }
       }
     }
