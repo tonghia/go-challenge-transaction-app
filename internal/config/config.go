@@ -63,14 +63,14 @@ func Load() (*Config, error) {
 	viper.SetConfigType("yaml")
 
 	if err := viper.ReadConfig(bytes.NewBuffer(defaultConfig)); err != nil {
-		return nil, fmt.Errorf("Failed to read viper config: %v", err)
+		return nil, fmt.Errorf("failed to read viper config: %v", err)
 	}
 
 	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "__"))
 	viper.AutomaticEnv()
 
 	if err := viper.Unmarshal(cfg); err != nil {
-		return nil, fmt.Errorf("Failed to unmarshal config: %v", err)
+		return nil, fmt.Errorf("failed to unmarshal config: %v", err)
 	}
 
 	return cfg, nil
