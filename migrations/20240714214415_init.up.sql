@@ -21,7 +21,7 @@ CREATE TABLE `account_transactions` (
  `user_id`          bigint(20) COMMENT 'user id',
  `account_id`       bigint(20) COMMENT 'account id',
  `bank`             varchar(20) COMMENT 'bank',
- `amount`           bigint(20) COMMENT 'amount',
+ `amount`           decimal(20,8) COMMENT 'amount',
  `transaction_type` varchar(20) COMMENT 'transaction type',
  `delete_at`        datetime COMMENT 'delete at',
  `created_at`       datetime DEFAULT CURRENT_TIMESTAMP(),

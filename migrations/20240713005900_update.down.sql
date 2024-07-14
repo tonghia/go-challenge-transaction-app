@@ -1,3 +1,0 @@
-# generate by sqlize
-
-# empty
