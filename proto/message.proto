@@ -6,16 +6,67 @@ import "google/protobuf/timestamp.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
 message Decimal {
-  int64 unit = 1;
-  int32 nanos = 2;
+  int64 unit = 1 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      type: INTEGER,
+      example: "100"
+    }
+  ];
+  int32 nanos = 2 [
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      type: INTEGER
+    }
+  ];
 }
 
 message Transaction {
-    int64 id = 1;
-    int64 account_id = 2;
-    Decimal amount = 3;
-    string transaction_type = 4;
+    int64 id = 1 [
+      (buf.validate.field).int64.gt = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        type: INTEGER,
+        required: [ "id" ],
+        example: "1"
+      }
+    ];
+    int64 account_id = 2 [
+      (buf.validate.field).int64.gt = 0,
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        type: INTEGER,
+        required: [ "account_id" ],
+        example: "1"
+      }
+    ];
+    Decimal amount = 3 [
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        required: [ "amount" ]
+      }
+    ];
+    string transaction_type = 4 [
+      (buf.validate.field).string = {in: ["deposit", "withdraw"]},
+      (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+        required: [ "transaction_type" ],
+        enum: [ "deposit", "withdraw" ]
+      }
+    ];
     google.protobuf.Timestamp created_at = 5;
+}
+
+message CreateTransaction {
+  int64 account_id = 1 [
+    (buf.validate.field).int64.gt = 0,
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      type: INTEGER,
+      example: "1"
+    }
+  ];
+  Decimal amount = 2;
+  string transaction_type = 3 [
+    (buf.validate.field).string = {in: ["deposit", "withdraw"]},
+    (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+      required: [ "transaction_type" ],
+      enum: [ "departing", "returning" ]
+    }
+  ];
 }
 
 message ListTransactionsRequest {
@@ -49,7 +100,7 @@ message CreateTransactionRequest {
           type: INTEGER
         }
       ];
-    Transaction transaction = 2;
+      CreateTransaction transaction = 2;
 }
 
 message CreateTransactionResponse {

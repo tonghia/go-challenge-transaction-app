@@ -19,7 +19,6 @@ PORT = 3306
 DATABASE = user_transaction
 USER = root
 PASSWORD = secret
-DSN := $$(mysql://$(USER):$(PASSWORD)@tcp($(HOST):$(PORT))/$(DATABASE))
 
 # Build 
 VCS_REF := $(shell git rev-parse HEAD)
@@ -30,6 +29,7 @@ install:
 	go install github.com/bufbuild/buf/cmd/buf@latest
 	go install go.uber.org/mock/mockgen@latest
 	go install golang.org/x/tools/cmd/goimports@latest
+	go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
 
 .PHONY: fmt
 fmt: ## Run gofmt for all .go files
@@ -64,7 +64,7 @@ cleangen: ## Clean generated files
 cleanmock: ## Clean generated mock files
 	@rm -f **/mock/*
 
-unit-test:
+unit-test: ## Run unit test and coverage
 	go test -v -timeout 5m -coverprofile dist/cover.out ./...
 	go tool cover -html=dist/cover.out -o dist/cover.html
 
@@ -75,20 +75,20 @@ lint: ## Run linter
 	@golangci-lint run ./...
 
 .PHONY: migrate-up
-migrate-up:
-	migrate -database ${DSN} -path migrations up
+migrate-up: ## Run migrations
+	migrate -database "mysql://$(USER):$(PASSWORD)@tcp($(HOST):$(PORT))/$(DATABASE)" -path migrations up
 
 .PHONY: migrate-down
-migrate-down:
-	migrate -database ${DSN} -path migrations down
+migrate-down: ## Rollback migrations
+	migrate -database "mysql://$(USER):$(PASSWORD)@tcp($(HOST):$(PORT))/$(DATABASE)" -path migrations down
 
 .PHONY: compose-up
-compose-up:
+compose-up: ## Start server
 	DOCKER_BUILDKIT=1 docker build -f Dockerfile --build-arg=COMMIT=$(VCS_REF) --build-arg=BUILD_DATE=$(BUILD_DATE) -t user_transaction_app .
 	docker compose -f compose.yaml up -d
 
 .PHONY: compose-down
-compose-down:
+compose-down: ## Stop server
 	docker compose -f compose.yaml down
 
 help: ## Display this help screen

@@ -95,7 +95,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/ServiceCreateTransactionBody"
+              "$ref": "#/definitions/transactionServiceCreateTransactionBody"
             }
           }
         ],
@@ -191,14 +191,6 @@
     }
   },
   "definitions": {
-    "ServiceCreateTransactionBody": {
-      "type": "object",
-      "properties": {
-        "transaction": {
-          "$ref": "#/definitions/transactionTransaction"
-        }
-      }
-    },
     "ServiceUpdateTransactionBody": {
       "type": "object",
       "properties": {
@@ -235,6 +227,29 @@
         }
       }
     },
+    "transactionCreateTransaction": {
+      "type": "object",
+      "properties": {
+        "account_id": {
+          "type": "integer",
+          "format": "int64",
+          "example": 1
+        },
+        "amount": {
+          "$ref": "#/definitions/transactionDecimal"
+        },
+        "transaction_type": {
+          "type": "string",
+          "enum": [
+            "departing",
+            "returning"
+          ]
+        }
+      },
+      "required": [
+        "transaction_type"
+      ]
+    },
     "transactionCreateTransactionResponse": {
       "type": "object",
       "properties": {
@@ -262,8 +277,9 @@
       "type": "object",
       "properties": {
         "unit": {
-          "type": "string",
-          "format": "int64"
+          "type": "integer",
+          "format": "int64",
+          "example": 100
         },
         "nanos": {
           "type": "integer",
@@ -310,28 +326,48 @@
         }
       }
     },
+    "transactionServiceCreateTransactionBody": {
+      "type": "object",
+      "properties": {
+        "transaction": {
+          "$ref": "#/definitions/transactionCreateTransaction"
+        }
+      }
+    },
     "transactionTransaction": {
       "type": "object",
       "properties": {
         "id": {
-          "type": "string",
-          "format": "int64"
+          "type": "integer",
+          "format": "int64",
+          "example": 1
         },
         "account_id": {
-          "type": "string",
-          "format": "int64"
+          "type": "integer",
+          "format": "int64",
+          "example": 1
         },
         "amount": {
           "$ref": "#/definitions/transactionDecimal"
         },
         "transaction_type": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "deposit",
+            "withdraw"
+          ]
         },
         "created_at": {
           "type": "string",
           "format": "date-time"
         }
-      }
+      },
+      "required": [
+        "id",
+        "account_id",
+        "amount",
+        "transaction_type"
+      ]
     },
     "transactionUpdateTransactionResponse": {
       "type": "object",
