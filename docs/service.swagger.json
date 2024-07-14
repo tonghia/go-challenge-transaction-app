@@ -57,7 +57,7 @@
             "name": "Authorization",
             "description": "Bearer token",
             "in": "header",
-            "required": true,
+            "required": false,
             "type": "string"
           }
         ],
@@ -97,6 +97,13 @@
             "schema": {
               "$ref": "#/definitions/transactionServiceCreateTransactionBody"
             }
+          },
+          {
+            "name": "Authorization",
+            "description": "Bearer token",
+            "in": "header",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -137,6 +144,13 @@
             "required": true,
             "type": "string",
             "format": "int64"
+          },
+          {
+            "name": "Authorization",
+            "description": "Bearer token",
+            "in": "header",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -182,6 +196,13 @@
             "schema": {
               "$ref": "#/definitions/ServiceUpdateTransactionBody"
             }
+          },
+          {
+            "name": "Authorization",
+            "description": "Bearer token",
+            "in": "header",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [

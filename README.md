@@ -29,14 +29,27 @@ make compose-up
 
 Note: you might need to run with `sudo` in Linux computer.
 
+Run unit tests
+
+```sh
+make unit-test
+```
+
 To explore more useful commands for developing the project.
 
 ```sh
 make help
 ```
 
+### How to test
+
+Start the local server.
+Have a look at [API document](#api-document). Prepare your data to generate `curl` command. Then run the curl.
+Note: please use account id from 1 to 10. I couldn't complete the API to create account. Sorry for the inconvenience.
+
 ## What's next
 
 - [ ] Implement authentication
+- [ ] API to create account by user
 - [ ] Improve unit test coverage
 - [ ] Integration tests

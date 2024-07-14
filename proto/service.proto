@@ -23,7 +23,6 @@ service Service {
           name: "Authorization"
           description: "Bearer token"
           type: STRING
-          required: true
         }
       }
     };
@@ -34,6 +33,15 @@ service Service {
       post: "/api/auth/users/{user_id}/transactions",
       body: "*"
     };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      parameters: {
+        headers: {
+          name: "Authorization"
+          description: "Bearer token"
+          type: STRING
+        }
+      }
+    };
   }
 
   rpc UpdateTransaction(UpdateTransactionRequest) returns (UpdateTransactionResponse) {
@@ -41,11 +49,29 @@ service Service {
       put: "/api/auth/users/{user_id}/transactions/{transaction_id}",
       body: "*"
     };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      parameters: {
+        headers: {
+          name: "Authorization"
+          description: "Bearer token"
+          type: STRING
+        }
+      }
+    };
   }
 
   rpc DeleteTransaction(DeleteTransactionRequest) returns (DeleteTransactionResponse) {
     option (google.api.http) = {
       delete: "/api/auth/users/{user_id}/transactions/{transaction_id}"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      parameters: {
+        headers: {
+          name: "Authorization"
+          description: "Bearer token"
+          type: STRING
+        }
+      }
     };
   }
 
