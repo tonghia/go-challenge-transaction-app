@@ -10,7 +10,7 @@ import (
 )
 
 // Converts a valid pb.Transaction to model.AccountTransaction correctly
-func TestTransactionFromPb_ValidTransaction(t *testing.T) {
+func TestTransactionFromPb(t *testing.T) {
 	p := &pb.Transaction{
 		Id:              1,
 		AccountId:       2,
@@ -33,7 +33,7 @@ func TestTransactionFromPb_ValidTransaction(t *testing.T) {
 }
 
 // Converts AccountTransaction to pb.Transaction correctly
-func TestTransactionToPb_ConvertsCorrectly(t *testing.T) {
+func TestTransactionToPb(t *testing.T) {
 	amount := decimal.NewFromFloat(123.45)
 	accountTransaction := &model.AccountTransaction{
 		ID:              123,
@@ -60,7 +60,7 @@ func TestTransactionToPb_ConvertsCorrectly(t *testing.T) {
 }
 
 // Converts a list of AccountTransaction to a list of pb.Transaction correctly
-func TestConvertsListOfAccountTransactionToListOfPbTransaction(t *testing.T) {
+func TestTransactionsToPb(t *testing.T) {
 	transactions := []*model.AccountTransaction{
 		{
 			ID:     1,
@@ -93,5 +93,28 @@ func TestConvertsListOfAccountTransactionToListOfPbTransaction(t *testing.T) {
 
 	if !reflect.DeepEqual(result, expected) {
 		t.Errorf("expected %v, got %v", expected, result)
+	}
+}
+
+// Converts protobuf transaction to model transaction correctly
+func TestCreateTransactionFromPb(t *testing.T) {
+	pbTransaction := &pb.CreateTransaction{
+		AccountId:       12345,
+		Amount:          &pb.Decimal{Unit: 100, Nanos: 500000000},
+		TransactionType: "credit",
+	}
+	userID := int64(67890)
+
+	result := CreateTransactionFromPb(pbTransaction, userID)
+
+	expected := &model.AccountTransaction{
+		UserID:          userID,
+		AccountID:       12345,
+		Amount:          decimal.New(100, 500000000),
+		TransactionType: "credit",
+	}
+
+	if !reflect.DeepEqual(result, expected) {
+		t.Errorf("Expected %v, got %v", expected, result)
 	}
 }

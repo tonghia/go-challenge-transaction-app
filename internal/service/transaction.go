@@ -38,7 +38,7 @@ func (s *service) CreateTransaction(ctx context.Context, req *pb.CreateTransacti
 		}
 	}
 
-	newTransaction := pbconv.CreateTransactionFromPb(req.Transaction)
+	newTransaction := pbconv.CreateTransactionFromPb(req.Transaction, req.UserId)
 	if err := s.repos.AccountTransaction.CreateOne(ctx, newTransaction); err != nil {
 		s.log.Error(fmt.Sprintf("failed to create transaction: %v", err))
 		return nil, status.Error(codes.Internal, "failed to create transaction")
