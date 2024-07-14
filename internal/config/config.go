@@ -29,22 +29,24 @@ type Base struct {
 // MySQL is settings of a MySQL server. It contains almost same fields as mysql.Config,
 // but with some different field names and tags.
 type MySQL struct {
-	Username string `yaml:"username" mapstructure:"username"`
-	Password string `yaml:"password" mapstructure:"password"`
-	Protocol string `yaml:"protocol" mapstructure:"protocol"`
-	Address  string `yaml:"address" mapstructure:"address"`
-	Port     int    `yaml:"port" mapstructure:"port"`
-	Database string `yaml:"database" mapstructure:"database"`
+	Username  string `yaml:"username" mapstructure:"username"`
+	Password  string `yaml:"password" mapstructure:"password"`
+	Protocol  string `yaml:"protocol" mapstructure:"protocol"`
+	Address   string `yaml:"address" mapstructure:"address"`
+	Port      int    `yaml:"port" mapstructure:"port"`
+	Database  string `yaml:"database" mapstructure:"database"`
+	ParseTime bool   `yaml:"parse_time" mapstructure:"parse_time"`
 }
 
 // FormatDSN returns MySQL DSN from settings.
 func (m *MySQL) FormatDSN() string {
 	um := &mysql.Config{
-		User:   m.Username,
-		Passwd: m.Password,
-		Net:    m.Protocol,
-		Addr:   m.Address,
-		DBName: m.Database,
+		User:      m.Username,
+		Passwd:    m.Password,
+		Net:       m.Protocol,
+		Addr:      m.Address,
+		DBName:    m.Database,
+		ParseTime: m.ParseTime,
 	}
 	return um.FormatDSN()
 }

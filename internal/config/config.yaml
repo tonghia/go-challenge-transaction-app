@@ -13,3 +13,4 @@ mysql:
   username: myuser
   password: mysecret
   protocol: tcp
+  parse_time: true

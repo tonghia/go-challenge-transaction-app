@@ -27,6 +27,14 @@ func TransactionsToPb(ts []*model.AccountTransaction) []*pb.Transaction {
 	return rs
 }
 
+func CreateTransactionFromPb(t *pb.CreateTransaction) *model.AccountTransaction {
+	return &model.AccountTransaction{
+		AccountID:       t.AccountId,
+		Amount:          decimal.New(t.Amount.Unit, t.Amount.Nanos),
+		TransactionType: t.TransactionType,
+	}
+}
+
 func TransactionFromPb(t *pb.Transaction) *model.AccountTransaction {
 	return &model.AccountTransaction{
 		ID:              t.Id,

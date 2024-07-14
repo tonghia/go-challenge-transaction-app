@@ -165,7 +165,7 @@ func TestCreateTransaction_Success(t *testing.T) {
 	// Test case: successful creation
 	ctx := context.Background()
 	req := &pb.CreateTransactionRequest{
-		Transaction: &pb.Transaction{
+		Transaction: &pb.CreateTransaction{
 			AccountId: 1,
 			Amount: &pb.Decimal{
 				Unit:  100,
@@ -202,7 +202,7 @@ func TestCreateTransaction_Error(t *testing.T) {
 	defer ctrl.Finish()
 	ctx := context.Background()
 	req := &pb.CreateTransactionRequest{
-		Transaction: &pb.Transaction{AccountId: 1, Amount: &pb.Decimal{Unit: 100, Nanos: 0}, TransactionType: "deposit"},
+		Transaction: &pb.CreateTransaction{AccountId: 1, Amount: &pb.Decimal{Unit: 100, Nanos: 0}, TransactionType: "deposit"},
 	}
 
 	mockAccountRepo := mock.NewMockAccountRepositorier(ctrl)
