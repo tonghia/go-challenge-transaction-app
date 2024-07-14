@@ -6,6 +6,11 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+const (
+	TransactionTypeWithdraw = "withdraw"
+	TransactionTypeDeposit  = "deposit"
+)
+
 type AccountTransaction struct {
 	ID              int64           `sql:"primary_key;auto_increment"`
 	UserID          int64           `sql:"type:BIGINT;index;index_columns:user_id,account_id"`

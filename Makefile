@@ -64,7 +64,7 @@ cleangen: ## Clean generated files
 cleanmock: ## Clean generated mock files
 	@rm -f **/mock/*
 
-unittest:
+unit-test:
 	go test -v -timeout 5m -coverprofile dist/cover.out ./...
 	go tool cover -html=dist/cover.out -o dist/cover.html
 

@@ -40,8 +40,6 @@ func Run(_ []string) error {
 		server.WithGrpcAddrListen(cfg.Server.GRPC),
 		server.WithGatewayAddrListen(cfg.Server.HTTP),
 		server.WithServiceServer(
-			// Your service server init goes here
-			// example: services.NewServer(cfg),
 			service.NewService(ctx, cfg, ll, repo),
 		),
 		server.WithGatewayServerMiddlewares(mw.MiddlewareHandleFunc),

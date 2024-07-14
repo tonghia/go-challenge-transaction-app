@@ -1,14 +1,9 @@
 package server
 
 import (
-	"context"
-	"os"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/tonghia/go-challenge-transaction-app/pkg/server/gateway"
-	"go.opentelemetry.io/otel/trace"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/grpclog"
 )
 
 // Option configures a gRPC and a gateway server.
@@ -67,11 +62,6 @@ func WithGatewayServerConfig(cfg *gateway.HTTPServerConfig) Option {
 	}
 }
 
-// WithPassedHeader returns an Option that sets configurations about passed headers for a gateway server.
-func WithPassedHeader(decider gateway.PassedHeaderDeciderFunc) Option {
-	return WithGatewayServerMiddlewares(gateway.CreatePassingHeaderMiddleware(decider))
-}
-
 ///-------------------------- GRPC options below--------------------------
 
 // WithGrpcAddr ...
@@ -98,41 +88,9 @@ func WithGrpcServerUnaryInterceptors(interceptors ...grpc.UnaryServerInterceptor
 	}
 }
 
-// WithGrpcServerStreamInterceptors returns an Option that sets stream interceptor(s) for a gRPC server.
-func WithGrpcServerStreamInterceptors(interceptors ...grpc.StreamServerInterceptor) Option {
-	return func(c *serverConfig) {
-		c.grpc.serverStreamInterceptors = append(c.grpc.serverStreamInterceptors, interceptors...)
-	}
-}
-
-// WithDefaultLogger returns an Option that sets default grpclogger.LoggerV2 object.
-func WithDefaultLogger() Option {
-	return func(c *serverConfig) {
-		grpclog.SetLoggerV2(grpclog.NewLoggerV2(os.Stdout, os.Stderr, os.Stderr))
-	}
-}
-
 // WithServiceServer ...
 func WithServiceServer(srv ...ServiceServer) Option {
 	return func(c *serverConfig) {
 		c.serviceServers = append(c.serviceServers, srv...)
-	}
-}
-
-// WithTracerProvider enable tracing
-func WithTracerProvider(provider trace.TracerProvider) Option {
-	return func(cfg *serverConfig) {
-		if provider != nil {
-			cfg.grpc.tracerProvider = provider
-		}
-	}
-}
-
-// WithValidateCallback validate callback
-func WithValidateCallback(callback func(context.Context, error)) Option {
-	return func(cfg *serverConfig) {
-		if callback != nil {
-			cfg.grpc.validateCallback = callback
-		}
 	}
 }
