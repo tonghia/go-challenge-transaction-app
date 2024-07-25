@@ -30,6 +30,7 @@ install:
 	go install go.uber.org/mock/mockgen@latest
 	go install golang.org/x/tools/cmd/goimports@latest
 	go install -tags 'mysql' github.com/golang-migrate/migrate/v4/cmd/migrate@latest
+	go install golang.org/x/vuln/cmd/govulncheck@latest
 
 .PHONY: fmt
 fmt: ## Run gofmt for all .go files
@@ -90,6 +91,10 @@ compose-up: ## Start server
 .PHONY: compose-down
 compose-down: ## Stop server
 	docker compose -f compose.yaml down
+
+.PHONY: vunlcheck
+vunlcheck:
+	govulncheck ./...
 
 help: ## Display this help screen
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
